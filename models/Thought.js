@@ -57,7 +57,7 @@ const ThoughtSchema = new Schema(
 );
 
 
-ThoughtSchema.virtual('username').get(function() {
+ThoughtSchema.virtual('ownerUsername').get(function() {
     return this.parent().username
 })
 

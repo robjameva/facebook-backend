@@ -11,8 +11,8 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-        validate: [validateEmail, 'Please fill a valid email address'],
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+        // validate: [validateEmail, 'Please fill a valid email address'],
+        // match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     thoughts: [
         {
@@ -36,9 +36,9 @@ const UserSchema = new Schema({
     }
 );
 
-UserSchema.virtual('friendCount').get(function() {
-    return this.friends.length;
-})
+// UserSchema.virtual('friendCount').get(function() {
+//     return this.friends.length;
+// })
 
 // create the user model using the userSchema
 const User = model('User', UserSchema);
