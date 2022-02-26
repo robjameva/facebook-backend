@@ -24,6 +24,12 @@ const ReactionSchema = new Schema(
             default: Date.now,
             get: createdAtVal => dateFormat(createdAtVal)
         }
+    },
+    {
+        toJSON: {
+            getters: true
+        },
+        _id: false
     }
 );
 
@@ -40,12 +46,10 @@ const ThoughtSchema = new Schema(
             default: Date.now,
             get: createdAtVal => dateFormat(createdAtVal)
         },
-        userId: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'Comment'
-            }
-        ],
+        userID: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
         reactions: [ReactionSchema]
     },
     {
@@ -57,9 +61,10 @@ const ThoughtSchema = new Schema(
 );
 
 
-ThoughtSchema.virtual('Username').get(function() {
-    return this.parent().username
-})
+// ThoughtSchema.virtual('Username').get(function() {
+//     console.log(this)
+//     return this.parent().username
+// })
 
 ThoughtSchema.virtual('reactionCount').get(function() {
     return this.reactions.length;

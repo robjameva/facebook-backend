@@ -22,7 +22,7 @@ const UserSchema = new Schema({
     thoughts: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Thoughts'
+            ref: 'Thought'
         }
     ],
     friends: [
@@ -42,7 +42,7 @@ const UserSchema = new Schema({
 );
 
 UserSchema.virtual('friendCount').get(function() {
-    return this.friends.length;
+    if (this.friends) return this.friends.length;
 })
 
 // create the user model using the userSchema
