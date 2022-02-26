@@ -1,11 +1,11 @@
 const { User } = require('../models');
 
 const userController = {
-    // get all pizzas
+    // get all users
     getAllUsers(req, res) {
         User.find({})
             // .populate({
-            //     path: 'comments',
+            //     path: 'thoughts',
             //     select: '-__v'
             // })
             .select('-__v')
@@ -17,16 +17,16 @@ const userController = {
             });
     },
 
-    // get one pizza by id
+    // get one user by id
     getUserById({ params }, res) {
         User.findOne({ _id: params.id })
             // .populate({
-            //     path: 'comments',
+            //     path: 'thoughts',
             //     select: '-__v'
             // })
             .select('-__v')
             .then(dbUserData => {
-                // If no pizza is found, send 404
+                // If no user is found, send 404
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No user found with this id!' });
                     return;
@@ -39,14 +39,14 @@ const userController = {
             });
     },
 
-    // create pizza
+    // create user
     createUser({ body }, res) {
         User.create(body)
             .then(dbUserData => res.json(dbUserData))
             .catch(err => res.status(400).json(err))
     },
 
-    // update pizza
+    // update user
     updateUser({ params, body }, res) {
         User.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
             .then(dbUserData => {
@@ -59,15 +59,15 @@ const userController = {
             .catch(err => res.status(400).json(err))
     },
 
-    // delete pizza
+    // delete user
     deleteUser({ params }, res) {
         User.findOneAndDelete({ _id: params.id })
-            .then(dbPizzaData => {
-                if (!dbPizzaData) {
+            .then(dbUserData => {
+                if (!dbUserData) {
                     res.status(404).json({ message: 'No user found with this id!' });
                     return;
                 }
-                res.json(dbPizzaData)
+                res.json(dbUserData)
             })
             .catch(err => res.status(400).json(err))
     }

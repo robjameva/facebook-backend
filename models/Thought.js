@@ -40,7 +40,7 @@ const ThoughtSchema = new Schema(
             default: Date.now,
             get: createdAtVal => dateFormat(createdAtVal)
         },
-        username: [
+        userId: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Comment'
@@ -57,7 +57,7 @@ const ThoughtSchema = new Schema(
 );
 
 
-ThoughtSchema.virtual('ownerUsername').get(function() {
+ThoughtSchema.virtual('Username').get(function() {
     return this.parent().username
 })
 
