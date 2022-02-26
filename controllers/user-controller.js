@@ -2,14 +2,16 @@ const { User, Thought } = require('../models');
 
 const userController = {
     // get all users
-    getAllUsers(req, res) {
-        User.find({})
-            .select('-__v')
-            .then(dbUserData => res.json(dbUserData))
-            .catch(err => {
-                console.log(err);
-                res.status(400).json(err);
-            });
+    async getAllUsers(req, res) {
+        try {
+            const dbUserData = await User.find({})
+                .select('-__v')
+
+            res.json(dbUserData)
+
+        } catch (error) {
+            res.status(400).json(error);
+        }
     },
 
     // get one user by id
@@ -83,24 +85,26 @@ const userController = {
     },
 
     // delete user
-    deleteUser({ params }, res) {
-        User.findOneAndDelete({ _id: params.id })
-            .then(dbUserData => {
-                if (!dbUserData) {
-                    res.status(404).json({ message: 'No user found with this id!' });
-                    return;
-                }
+    async deleteUser({ params }, res) {
 
-                return Thought.deleteMany(
-                    //delete all thoughts 
-                    { _id: { $in: dbUserData.thoughts } }
-                )
-                    .then(dbThoughtData => {
-                        res.json(dbThoughtData)
-                    })
+        try {
+            const dbUserData = await User.findOneAndDelete({ _id: params.id })
+            const dbThoughtData = await Thought.deleteMany({ _id: { $in: dbUserData.thoughts } })
 
-            })
-            .catch(err => res.status(400).json(err))
+
+            Promise.all([dbUserData, dbThoughtData])
+
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+
+            res.json({ "msg": 'User deleted' })
+
+        } catch (error) {
+            res.status(400).json(error)
+        }
+
     }
 };
 
