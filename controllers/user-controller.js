@@ -4,9 +4,7 @@ const userController = {
     // get all users
     async getAllUsers(req, res) {
         try {
-            const dbUserData = await User.find({})
-                .select('-__v')
-
+            const dbUserData = await User.find({}).select('-__v')
             res.json(dbUserData)
 
         } catch (error) {
@@ -15,73 +13,86 @@ const userController = {
     },
 
     // get one user by id
-    getUserById({ params }, res) {
-        User.findOne({ _id: params.id })
-            .select('-__v')
-            .then(dbUserData => {
-                // If no user is found, send 404
-                if (!dbUserData) {
-                    res.status(404).json({ message: 'No user found with this id!' });
-                    return;
-                }
-                res.json(dbUserData);
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(400).json(err);
-            });
+    async getUserById({ params }, res) {
+        try {
+            const dbUserData = await User.findOne({ _id: params.id }).select('-__v')
+
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+            res.json(dbUserData);
+
+        } catch (error) {
+            res.status(400).json(error);
+        }
     },
 
     // create user
-    createUser({ body }, res) {
-        User.create(body)
-            .then(dbUserData => res.json(dbUserData))
-            .catch(err => res.status(400).json(err))
+    async createUser({ body }, res) {
+        try {
+            const dbUserData = await User.create(body)
+            res.json(dbUserData)
+        } catch (error) {
+            res.status(400).json(error)
+        }
+
+
     },
 
-    addFriend({ params, body }, res) {
-        User.findOneAndUpdate(
-            { _id: params.id },
-            { $push: { friends: params.friendId } },
-            { new: true, runValidators: true }
-        )
-            .then(dbUserData => {
-                if (!dbUserData) {
-                    res.status(404).json({ message: 'No user found with this id!' });
-                    return;
-                }
-                res.json(dbUserData)
-            })
-            .catch(err => res.status(400).json(err))
+    async addFriend({ params, body }, res) {
+        try {
+            const dbUserData = await User.findOneAndUpdate(
+                { _id: params.id },
+                { $push: { friends: params.friendId } },
+                { new: true, runValidators: true }
+            )
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+
+            res.json(dbUserData)
+
+        } catch (error) {
+            res.status(400).json(error)
+        }
     },
 
-    removeFriend({ params, body }, res) {
-        User.findOneAndUpdate(
-            { _id: params.id },
-            { $pull: { friends: params.friendId } },
-            { new: true, runValidators: true }
-        )
-            .then(dbUserData => {
-                if (!dbUserData) {
-                    res.status(404).json({ message: 'No user found with this id!' });
-                    return;
-                }
-                res.json(dbUserData)
-            })
-            .catch(err => res.status(400).json(err))
+    async removeFriend({ params, body }, res) {
+        try {
+            const dbUserData = await User.findOneAndUpdate(
+                { _id: params.id },
+                { $pull: { friends: params.friendId } },
+                { new: true, runValidators: true }
+            )
+
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+
+            res.json(dbUserData)
+        } catch (error) {
+            res.status(400).json(error)
+        }
     },
 
     // update user
-    updateUser({ params, body }, res) {
-        User.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
-            .then(dbUserData => {
-                if (!dbUserData) {
-                    res.status(404).json({ message: 'No user found with this id!' });
-                    return;
-                }
-                res.json(dbUserData)
-            })
-            .catch(err => res.status(400).json(err))
+    async updateUser({ params, body }, res) {
+        try {
+            const dbUserData = await User.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
+
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+            res.json(dbUserData)
+
+        } catch (error) {
+            res.status(400).json(error)
+
+        }
     },
 
     // delete user
